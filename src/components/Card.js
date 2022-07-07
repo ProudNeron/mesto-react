@@ -12,8 +12,8 @@ function Card({card, onCardClick, onCardLike, onCardDelete}) {
       <img src={card.link} alt={card.name}
            onClick={() => {onCardClick({link: card.link, name: card.name})}}
            className="card__image" />
-      {isOwn ? <button type="button" aria-label="Удалить карточку"
-                       onClick={() => onCardDelete(card._id)} className="card__delete-btn"></button> : ''}
+      {isOwn && <button type="button" aria-label="Удалить карточку"
+                       onClick={() => onCardDelete(card._id)} className="card__delete-btn"></button>}
       <div className="card__info">
         <h2 className="card__title">{card.name}</h2>
         <div className="card__reaction">

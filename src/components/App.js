@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import Header from "./Header.js";
 import Main from "./Main.js";
 import Footer from "./Footer.js";
@@ -8,11 +8,13 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
+import SubmitPopup from "./SubmitPopup";
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpenState] = useState(false);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpenState] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupState] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupState] = useState(false);
+  const [deletingCardId, setDeletingCardId] = useState('');
   const [selectedCard, setSelectedCardState] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [cards, setCardsState] = useState([]);
@@ -37,7 +39,7 @@ function App() {
   }
 
   function handleEditProfileClick() {
-    setIsEditProfilePopupOpenState(true);
+    setEditProfilePopupOpenState(true);
   }
 
   function handleAddPlaceClick() {
@@ -48,10 +50,15 @@ function App() {
     setSelectedCardState(card);
   }
 
+  function handleDeleteBtnClick(cardId) {
+    setDeletingCardId(cardId);
+  }
+
   function closeAllPopups() {
     setEditAvatarPopupState(false);
-    setIsEditProfilePopupOpenState(false);
+    setEditProfilePopupOpenState(false);
     setAddPlacePopupState(false);
+    setDeletingCardId('');
     setSelectedCardState(null);
   }
 
@@ -87,9 +94,9 @@ function App() {
     }
   }
 
-  function handleCardDelete(cardId) {
-    api.deleteCard(cardId).then(() => {
-      setCardsState(cards.filter(c => c._id != cardId));
+  function handleCardDelete() {
+    api.deleteCard(deletingCardId).then(() => {
+      setCardsState(() => cards.filter(c => c._id != deletingCardId));
     }).catch(err => alert(err));
   }
 
@@ -98,7 +105,7 @@ function App() {
       <div className="page">
         <Header />
         <Main cards={cards}
-              onEditProfile={handleEditProfileClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+              onEditProfile={handleEditProfileClick} onCardLike={handleCardLike} onDeleteBtn={handleDeleteBtnClick}
               onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} />
         <Footer />
       </div>
@@ -106,6 +113,7 @@ function App() {
       <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
       <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}/>
       <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}/>
+      <SubmitPopup onCardDelete={handleCardDelete} isOpen={deletingCardId} onClose={closeAllPopups} />
     </CurrentUserContext.Provider>
   );
 }

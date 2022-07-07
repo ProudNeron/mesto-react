@@ -8,10 +8,10 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
 
   const currentUser = useContext(CurrentUserContext);
 
-  useEffect(() =>{
+  useEffect(() => {
     setName(currentUser?.name);
     setDescription(currentUser?.about);
-  }, [currentUser]);
+  }, [currentUser, isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -24,14 +24,22 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
     onClose(false);
   }
 
+  function handleNameChange(e) {
+    setName(e.target.value);
+  }
+
+  function handleDescriptionChange(e) {
+    setDescription(e.target.value);
+  }
+
   return (
     <PopupWithForm title='Редактировать профиль' name={'edit-user-data'} onSubmit={handleSubmit}
                    isOpen={isOpen} btnText={'Сохранить'} onClose={onClose}>
-      <input type="text" value={name || ''} onChange={(e) => setName(e.target.value)}
+      <input type="text" value={name || ''} onChange={handleNameChange}
              required id="user-name" minLength="2" maxLength="40"
              className="popup__form-item popup__form-item_user_name text-input"/>
       <span className="popup__input-error user-name-error"></span>
-      <input type="text" value={description || ''} onChange={(e) => setDescription(e.target.value)}
+      <input type="text" value={description || ''} onChange={handleDescriptionChange}
              required id="user-about" minLength="2" maxLength="200"
              className="popup__form-item popup__form-item_user_about text-input"/>
       <span className="popup__input-error user-about-error"></span>
