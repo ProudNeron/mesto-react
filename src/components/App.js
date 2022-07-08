@@ -16,7 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupState] = useState(false);
   const [deletingCardId, setDeletingCardId] = useState('');
   const [selectedCard, setSelectedCardState] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState({name: '', about: '', avatar: '', cohort: '', _id: ''});
   const [cards, setCardsState] = useState([]);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ function App() {
 
   function handleAddPlaceSubmit({name, link}) {
     api.postCard({name, link}).then( (newCard) => {
-      setCardsState([newCard, ...cards]);
+      setCardsState((prevState) => [newCard, ...prevState]);
       }).catch(err => alert(err));
   }
 
